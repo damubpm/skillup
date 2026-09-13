@@ -84,6 +84,10 @@ kbd{border:1px solid var(--line);background:var(--panel2);padding:2px 6px;border
  .grid.stats{grid-template-columns:1fr 1fr}.hero{flex-direction:column}.topic-row{grid-template-columns:1fr}.topic-row .hide-mobile{display:none}
  main{padding:13px}.card{padding:14px}.actions>.btn{flex:1}.barrow{grid-template-columns:110px 1fr 45px}
 }
+
+    .rule-table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 14px; background: #fff; border-radius: 8px; overflow: hidden; border: 1px solid var(--line); }
+    .rule-table th, .rule-table td { padding: 8px 12px; border: 1px solid var(--line); text-align: left; }
+    .rule-table th { background: rgba(15,107,93,0.08); color: var(--accent); font-weight: 700; }
 </style>
 </head>
 <body>
@@ -247,7 +251,7 @@ const shuffle = a => {
 const escapeHtml = s => String(s ?? "").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
 
 const GrammarDatabase = (() => {
-  const T = (id,title,level,rule,formula,examples,errors,contrast,seeds=[],tip="") => ({id,title,level,rule,formula,examples,errors,contrast,seeds,tip});
+  const T = (id,title,level,rule,formula,examples,errors,contrast,seeds=[],tip="",details="",tableHtml="") => ({id,title,level,rule,formula,examples,errors,contrast,seeds,tip,details,tableHtml});
   const topics = [
     T("to_be","To be","A1","Используется для состояния, профессии, возраста, места и характеристик.","Present: I am; he/she/it is; you/we/they are. Past: was/were.",
       [["I am tired.","Я устал."],["She is a doctor.","Она врач."],["They were at home.","Они были дома."]],
@@ -815,7 +819,11 @@ const UI = (() => {
   function renderReference(){
     $("referenceList").innerHTML=GrammarDatabase.topics.map(t=>`<details class="rule-topic" id="rule-${t.id}" data-search="${escapeHtml((t.title+" "+t.rule+" "+t.formula).toLowerCase())}">
       <summary>${escapeHtml(t.title)} <span class="pill">${t.level}</span></summary>
-      <div class="rulebox"><b>Когда:</b> ${escapeHtml(t.rule)}<br><b>Формула:</b> ${escapeHtml(t.formula)}</div>
+      <div class="rulebox">
+        <b>Подробное правило:</b> ${t.details ? escapeHtml(t.details) : escapeHtml(t.rule)}<br><br>
+        <b>Сводная таблица форм и правил:</b>
+        ${t.tableHtml ? t.tableHtml : `<table class="rule-table"><tr><th>Форма</th><th>Конструкция</th><th>Пример</th></tr><tr><td>Формула</td><td>${escapeHtml(t.formula)}</td><td>${escapeHtml(t.rule)}</td></tr></table>`}
+      </div>
       <div class="examples">${t.examples.map(e=>`<div class="example"><b>${escapeHtml(e[0])}</b><small>${escapeHtml(e[1])}</small></div>`).join("")}</div>
       <p><b>Типичные ошибки:</b><br>${t.errors.map(e=>"• "+escapeHtml(e)).join("<br>")}</p>
       <p><b>Сравнить:</b> ${escapeHtml(t.contrast)}</p>

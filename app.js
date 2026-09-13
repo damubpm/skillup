@@ -13,7 +13,7 @@ const shuffle = a => {
 const escapeHtml = s => String(s ?? "").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
 
 const GrammarDatabase = (() => {
-  const T = (id,title,level,rule,formula,examples,errors,contrast,seeds=[],tip="") => ({id,title,level,rule,formula,examples,errors,contrast,seeds,tip});
+  const T = (id,title,level,rule,formula,examples,errors,contrast,seeds=[],tip="",details="",tableHtml="") => ({id,title,level,rule,formula,examples,errors,contrast,seeds,tip,details,tableHtml});
   const topics = [
     T("to_be","To be","A1","Используется для состояния, профессии, возраста, места и характеристик.","Present: I am; he/she/it is; you/we/they are. Past: was/were.",
       [["I am tired.","Я устал."],["She is a doctor.","Она врач."],["They were at home.","Они были дома."]],
@@ -581,7 +581,11 @@ const UI = (() => {
   function renderReference(){
     $("referenceList").innerHTML=GrammarDatabase.topics.map(t=>`<details class="rule-topic" id="rule-${t.id}" data-search="${escapeHtml((t.title+" "+t.rule+" "+t.formula).toLowerCase())}">
       <summary>${escapeHtml(t.title)} <span class="pill">${t.level}</span></summary>
-      <div class="rulebox"><b>Когда:</b> ${escapeHtml(t.rule)}<br><b>Формула:</b> ${escapeHtml(t.formula)}</div>
+      <div class="rulebox">
+        <b>Подробное правило:</b> ${t.details ? escapeHtml(t.details) : escapeHtml(t.rule)}<br><br>
+        <b>Сводная таблица форм и правил:</b>
+        ${t.tableHtml ? t.tableHtml : `<table class="rule-table"><tr><th>Форма</th><th>Конструкция</th><th>Пример</th></tr><tr><td>Формула</td><td>${escapeHtml(t.formula)}</td><td>${escapeHtml(t.rule)}</td></tr></table>`}
+      </div>
       <div class="examples">${t.examples.map(e=>`<div class="example"><b>${escapeHtml(e[0])}</b><small>${escapeHtml(e[1])}</small></div>`).join("")}</div>
       <p><b>Типичные ошибки:</b><br>${t.errors.map(e=>"• "+escapeHtml(e)).join("<br>")}</p>
       <p><b>Сравнить:</b> ${escapeHtml(t.contrast)}</p>
