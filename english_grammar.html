@@ -422,11 +422,11 @@ const GrammarDatabase = (() => {
         ["correct","She suggested to go home.","She suggested going home.","suggest + V-ing."]
       ]),
     T("relative_clauses","Relative Clauses","B1","who — люди; which — вещи; that — люди/вещи в defining clauses; where — место.","the person who; the file that/which; the place where",
-      [["The developer who fixed it is here.","Разработчик, который это исправил, здесь."],["The file that you sent is corrupted.","Файл, который ты прислал, повреждён."]],
+      [["The developer who fixed it is here.","Разработчик, который это исправил, здесь."],["The document which you requested is ready.","Документ, который вы запросили, готов."]],
       ["the person which → who","the place which I live → where I live"],"who vs which vs that",
       [
-        ["fill","The person ___ called you is my manager.","who","Для человека → who."],
-        ["translate","Файл, который ты отправил, повреждён.","The file that you sent is corrupted.","Для вещи возможен that/which."],
+        ["fill","The specialist ___ solved the issue is on call.","who","Для человека → who."],
+        ["translate","Проект, который мы выбрали, успешный.","The project that we chose is successful.","Для вещей используем that или which."],
         ["correct","The woman which works here is my friend.","The woman who works here is my friend.","Для человека → who."]
       ]),
     T("questions","Question Formation","A1–B1","Вопросы обычно строятся через вспомогательный глагол перед подлежащим. С to be он сам становится перед подлежащим.","Wh + auxiliary + subject + base verb?",
@@ -438,7 +438,7 @@ const GrammarDatabase = (() => {
         ["correct","Where you live?","Where do you live?","Нужен auxiliary do."]
       ]),
     T("word_order","Word Order","A2–B1","Базовый порядок: Subject + Verb + Object + manner/place/time. Наречия частотности обычно перед смысловым глаголом, но после be.","S + V + O; frequency adverb before main verb, after be",
-      [["I usually work from home.","Я обычно работаю из дома."],["She is always busy.","Она всегда занята."],["We met him at the office yesterday.","Мы встретили его вчера в офисе."]],
+      [["We usually start meetings on time.","Мы обычно начинаем встречи вовремя."],["He is always punctual.","Он всегда пунктуален."],["They discussed the plan yesterday.","Они обсудили план вчера."]],
       ["I work usually → I usually work","Always she is → She is always"],"adverb position",
       [
         ["build","usually / I / work / from home","I usually work from home.","Наречие usually ставится перед смысловым глаголом."],
@@ -446,7 +446,7 @@ const GrammarDatabase = (() => {
         ["correct","I go often to the gym.","I often go to the gym.","Frequency adverb перед смысловым глаголом."]
       ]),
     T("have_to","Must vs Have to","B1","must — сильная внутренняя/говорящим заданная необходимость; have to — внешнее правило/обстоятельство. В повседневной речи различие не всегда строгое.","must + V; have/has to + V; had to для прошлого",
-      [["I must remember to call her.","Мне нужно не забыть ей позвонить."],["We have to wear badges at work.","На работе мы обязаны носить бейджи."],["I had to leave early.","Мне пришлось уйти рано."]],
+      [["I must send this feedback tonight.","Я должен отправить этот отзыв сегодня вечером."],["Employees have to follow security rules.","Сотрудники обязаны соблюдать правила безопасности."],["He had to catch the last train.","Ему пришлось успеть на последний поезд."]],
       ["must to go → must go","musted → had to"],"must vs have to",
       [
         ["fill","Yesterday I ___ leave early.","had to","У must нет обычной прошедшей формы; используем had to."],
@@ -454,7 +454,7 @@ const GrammarDatabase = (() => {
         ["correct","I must to finish this today.","I must finish this today.","must + base verb."]
       ]),
     T("few_little","Few / a few / little / a little","B1","few/little = почти нет; a few/a little = немного, но достаточно. few — countable, little — uncountable.","few/a few + plural countable; little/a little + uncountable",
-      [["I have a few questions.","У меня есть несколько вопросов."],["We have little time.","У нас почти нет времени."],["Add a little water.","Добавь немного воды."]],
+      [["There are a few tickets left.","Осталось несколько билетов."],["She has little patience for delays.","У неё почти нет терпения к задержкам."],["Could I get a little help?","Могу я получить немного помощи?"]],
       ["a little questions → a few questions","few time → little time"],"few vs a few; little vs a little",
       [
         ["fill","We have ___ time, so hurry up.","little","Time неисчисляемое; смысл — почти нет."],
@@ -591,7 +591,9 @@ const ExerciseGenerator = (() => {
   });
   const presentSubjects=[
     {s:"He",v:"works",base:"work",ru:"Он"},{s:"She",v:"drives",base:"drive",ru:"Она"},
-    {s:"My brother",v:"studies",base:"study",ru:"Мой брат"},{s:"Sarah",v:"plays",base:"play",ru:"Сара"}
+    {s:"My brother",v:"studies",base:"study",ru:"Мой брат"},{s:"Sarah",v:"plays",base:"play",ru:"Сара"},
+    {s:"Our team",v:"creates",base:"create",ru:"Наша команда"},{s:"The chef",v:"prepares",base:"prepare",ru:"Шеф-повар"},
+    {s:"My colleague",v:"writes",base:"write",ru:"Мой коллега"},{s:"Alex",v:"designs",base:"design",ru:"Алекс"}
   ];
   function generatedPresentSimple(d=1,type="all"){
     const x=sample(presentSubjects), choices=["fill","translate","correct","question","choice"], ty=type==="all"?sample(choices):type;
