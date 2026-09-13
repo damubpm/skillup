@@ -1,0 +1,10 @@
+{
+  "name": "english-grammar-app",
+  "version": "1.0.0",
+  "description": "Unit tests for English Grammar app",
+  "main": "index.html",
+  "scripts": {
+    "test": "node --test"
+  },
+  "type": "commonjs"
+}
