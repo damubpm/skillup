@@ -13,7 +13,7 @@ const shuffle = a => {
 const escapeHtml = s => String(s ?? "").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
 
 const GrammarDatabase = (() => {
-  const T = (id,title,level,rule,formula,examples,errors,contrast,seeds=[]) => ({id,title,level,rule,formula,examples,errors,contrast,seeds});
+  const T = (id,title,level,rule,formula,examples,errors,contrast,seeds=[],tip="") => ({id,title,level,rule,formula,examples,errors,contrast,seeds,tip});
   const topics = [
     T("to_be","To be","A1","Используется для состояния, профессии, возраста, места и характеристик.","Present: I am; he/she/it is; you/we/they are. Past: was/were.",
       [["I am tired.","Я устал."],["She is a doctor.","Она врач."],["They were at home.","Они были дома."]],
@@ -616,12 +616,29 @@ const UI = (() => {
       <div class="prompt">${escapeHtml(ex.prompt)}</div>${ex.context?`<div class="context">${escapeHtml(ex.context)}</div>`:""}
       <div id="answerArea">${answerControl(ex)}</div>
       <div id="feedbackArea"></div>
-      <div class="actions" style="margin-top:14px"><button class="btn" id="checkAnswer" type="button">Проверить</button>
-      <button class="btn secondary" id="showRule" type="button" ${ss.mode==="diagnostic"?"disabled title='В диагностике правило скрыто'":""}>Показать правило</button></div>
+      <div class="actions" style="margin-top:14px">
+        <button class="btn" id="checkAnswer" type="button">Проверить</button>
+        <button class="btn secondary" id="toggleHint" type="button" ${ss.mode==="diagnostic"?"disabled":""}>💡 Подсказка</button>
+        <button class="btn secondary" id="showRule" type="button" ${ss.mode==="diagnostic"?"disabled title='В диагностике правило скрыто'":""}>📖 Правило</button>
+        <button class="btn secondary" id="speakPrompt" type="button">🔊 Озвучить</button>
+      </div>
+      <div id="hintBox" style="display:none;margin-top:10px;padding:10px 14px;background:rgba(217,164,65,0.15);border-left:4px solid var(--gold);border-radius:8px;font-size:14px;"></div>
       <div class="shortcuts"><kbd>Enter</kbd> проверить/дальше · <kbd>1–4</kbd> вариант · <kbd>R</kbd> правило</div>`;
     document.querySelectorAll(".option").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll(".option").forEach(x=>x.classList.remove("selected"));b.classList.add("selected");ss.selected=b.dataset.value}));
     document.querySelectorAll(".word").forEach(b=>b.addEventListener("click",()=>{if(b.disabled)return;builtWords.push(b.dataset.word);b.disabled=true;renderBuilt()}));
     $("checkAnswer").addEventListener("click",onCheck);$("showRule").addEventListener("click",showRule);
+    $("toggleHint")?.addEventListener("click",()=>{
+      const hb = $("hintBox"), ex = LearningEngine.current(), topic = GrammarDatabase.get(ex.topicId);
+      if(!hb) return;
+      if(hb.style.display === "none"){
+        hb.textContent = ex.explanation || topic?.tip || "Обратите внимание на ключевые слова и время глагола.";
+        hb.style.display = "block";
+      } else { hb.style.display = "none"; }
+    });
+    $("speakPrompt")?.addEventListener("click",()=>{
+      const ex = LearningEngine.current();
+      speakText(ex.prompt.replace(/___/g, ex.answer ? (Array.isArray(ex.answer)?ex.answer[0]:ex.answer) : "blank"));
+    });
     $("answerInput")?.focus();
   }
   function renderBuilt(){
@@ -713,7 +730,18 @@ const UI = (() => {
       catch(err){toast("Не удалось импортировать JSON.")}e.target.value="";
     };r.readAsText(f);
   }
-  return {bind,showPage,refreshAll,renderExercise,renderSummary,toast};
+
+  function speakText(txt){
+    if (typeof window !== "undefined" && "speechSynthesis" in window && txt) {
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(txt);
+      u.lang = "en-US";
+      u.rate = 0.9;
+      window.speechSynthesis.speak(u);
+    }
+  }
+
+return {bind,showPage,refreshAll,renderExercise,renderSummary,toast};
 })();
 
 if (typeof document !== "undefined") {
